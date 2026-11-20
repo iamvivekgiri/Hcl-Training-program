@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Portal | Apex Institute of Technology & Cyber Sciences</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Hidden background canvas for WebShield gatekeeper compatibility -->
+  <div id="shield-canvas-container" style="display:none;">
+    <canvas id="shield-canvas"></canvas>
+  </div>
+
+  <div class="app-viewport">
+    <!-- Unlocked Protected Campus Portal View -->
+    <div id="portal-view" class="active" style="display: flex; opacity: 1; transform: translateY(0);">
+      <!-- Portal Top Navigation Bar -->
+      <nav class="portal-navbar">
+        <div class="portal-nav-brand">
+          <div class="crest-icon-box" style="width: 36px; height: 36px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 style="font-size: 1rem;">Apex Institute</h1>
+            <p style="font-size: 0.65rem;">Academic Cyber Portal</p>
+          </div>
+        </div>
+
+        <ul class="portal-nav-links">
+          <li><a href="#hero" class="active">Overview</a></li>
+          <li><a href="#departments">Departments &amp; Labs</a></li>
+          <li><a href="#stats">Campus Telemetry</a></li>
+          <li><a href="#life">Admissions &amp; Life</a></li>
+        </ul>
+
+        <div class="portal-nav-actions">
+          <div class="encryption-badge">
+            <span class="pulse-dot" style="background:#10B981; box-shadow:0 0 8px #10B981;"></span>
+            <span>TLS 1.3 | AES-256</span>
+          </div>
+
+          <div class="user-identity-badge" id="user-badge">
+            <img 
+              id="user-avatar-img" 
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" 
+              alt="User" 
+              class="user-avatar"
+            >
+            <div class="user-meta-col">
+              <span class="user-meta-name" id="user-display-name">Alex Rivera</span>
+              <span class="user-meta-role" id="user-display-role">Student &bull; Level 1</span>
+            </div>
+          </div>
+
+          <button type="button" class="btn-soc-monitor" id="btn-open-soc" title="Open Real-Time Security Operations Center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            <span>SOC Monitor</span>
+          </button>
+
+          <button type="button" class="btn-logout" id="btn-logout" title="Revoke Session & Disconnect">
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <!-- Portal Hero Section with 3D Holographic Monument -->
+      <section class="portal-hero-section" id="hero">
+        <div class="hero-content-col">
+          <span class="hero-eyebrow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            World Leader in Post-Quantum Computing &amp; Defense
+          </span>
+          <h1>Apex Institute of Technology &amp; Cyber Sciences</h1>
+          <p>
+            Welcome to the secure interior portal. Apex unites world-class faculty, quantum entangled networking labs, and zero-trust mesh defense architectures to forge the vanguard of cybersecurity engineering.
+          </p>
+          <div class="hero-actions-row">
+            <a href="#departments" class="btn-primary-portal">
+              <span>Inspect Academic Labs</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+            <button type="button" class="btn-secondary-portal" id="btn-hero-soc">
+              Open SOC Dashboard
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Holographic Campus Globe Frame -->
+        <div class="hero-3d-col">
+          <canvas id="portal-canvas" style="width: 100%; height: 100%;"></canvas>
+          <div class="monument-hud-overlay" id="monument-hud-overlay">
+            <span style="color:#38BDF8; font-weight:700;">HOLOGRAPHIC CAMPUS MONUMENT</span>
+            <div id="monument-hud-info">Drag to rotate &bull; Hover over beacons to inspect labs</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Academic Departments & Labs Grid -->
+      <section class="portal-section" id="departments">
+        <div class="section-header-block">
+          <span class="section-eyebrow">Elite Research Faculties</span>
+          <h2 class="section-title">Specialized Academic Programs &amp; Cyber Vaults</h2>
+        </div>
+
+        <div class="departments-grid">
+          <!-- Card 1 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">CYB &bull; LEVEL 1-5</span>
+              <h3>Cyber Defense &amp; Offensive Security</h3>
+              <p>Specialized training in kernel exploitation, firmware disassembly, autonomous red teaming, and hardware side-channel defense.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>12 Research Labs</span>
+              <span style="color:#00F5D4;">Active DEFCON 5</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">QNT &bull; LEVEL 3+</span>
+              <h3>Quantum Cryptography &amp; QKD</h3>
+              <p>Researching photon entanglement distribution, Shor algorithm resistance, and post-quantum lattice cryptography implementations.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>8 Photonic Vaults</span>
+              <span style="color:#7B2CBF;">100 Gbps Entangled</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">AIR &bull; LEVEL 2+</span>
+              <h3>Artificial Intelligence &amp; Swarm Defense</h3>
+              <p>Building resilient neural architectures, zero-day model poisoning countermeasures, and autonomous adversarial testing swarms.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>14 Neural Ranges</span>
+              <span style="color:#4361EE;">Swarm Testing Live</span>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">CLD &bull; LEVEL 2+</span>
+              <h3>Distributed Cloud &amp; MicroVM Sandboxing</h3>
+              <p>Zero-trust service meshes, eBPF kernel telemetry observability, confidential hardware enclaves, and distributed edge isolation.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>9 Cloud Clusters</span>
+              <span style="color:#FFB703;">100% Zero-Trust</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campus Stats Banner -->
+        <div class="stats-banner" id="stats">
+          <div class="stat-item">
+            <h4>1,420</h4>
+            <p>Active Researchers</p>
+          </div>
+          <div class="stat-item">
+            <h4>64</h4>
+            <p>Quantum Nodes Online</p>
+          </div>
+          <div class="stat-item">
+            <h4>100 Gbps</h4>
+            <p>Photonic QKD Mesh</p>
+          </div>
+          <div class="stat-item">
+            <h4 style="color: #10B981;">0</h4>
+            <p>Unresolved Breaches</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campus Life & Admissions Showcase -->
+      <section class="portal-section" id="life" style="padding-bottom: 100px;">
+        <div class="section-header-block">
+          <span class="section-eyebrow">The Apex Experience</span>
+          <h2 class="section-title">Admissions &amp; Global Impact</h2>
+        </div>
+
+        <div class="departments-grid">
+          <div class="dept-tilt-card" style="background: rgba(18, 30, 68, 0.55);">
+            <h3>24/7 Red vs Blue Cyber Arena</h3>
+            <p>Students compete in daily simulated national cyber-warfare scenarios using real-time packet inspection and kernel-level exploits.</p>
+            <div class="dept-meta-row">
+              <span>Arena Sigma-9</span>
+              <span style="color:#00F5D4;">Continuous Match</span>
+            </div>
+          </div>
+
+          <div class="dept-tilt-card" style="background: rgba(18, 30, 68, 0.55);">
+            <h3>Satellite Downlink Ground Station</h3>
+            <p>Direct atmospheric photonic reception from low-earth orbit quantum satellites testing free-space cryptographic key transmission.</p>
+            <div class="dept-meta-row">
+              <span>Observatory Delta</span>
+              <span style="color:#38BDF8;">LEO Link Active</span>
+            </div>
+          </div>
+
+          <div class="dept-tilt-card" style="background: rgba(18, 30, 68, 0.55);">
+            <h3>DARPA &amp; Global Industry Fellowships</h3>
+            <p>Fully funded graduate fellowships sponsored by sovereign cyber task forces, leading tech titans, and research foundations.</p>
+            <div class="dept-meta-row">
+              <span>Fall Cohort Open</span>
+              <span style="color:#10B981;">Apply with Clearance</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Floating SOC Quick-Access Presentation Button -->
+    <button type="button" class="soc-floating-btn" id="soc-floating-btn" title="Open Live Security Operations Center">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+      <span>SOC Drawer</span>
+      <span class="defcon-tag" id="defcon-pill">DEFCON 5</span>
+    </button>
+
+    <!-- =====================================================================
+         LIVE SECURITY OPERATIONS CENTER (SOC) SLIDE-OVER DRAWER
+         ===================================================================== -->
+    <div class="soc-drawer-backdrop" id="soc-drawer-backdrop">
+      <aside class="soc-drawer" id="soc-drawer">
+        <!-- Drawer Header -->
+        <div class="soc-drawer-header">
+          <div class="soc-drawer-title-group">
+            <h2>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+              <span>Security Operations Center (SOC)</span>
+            </h2>
+            <p id="soc-status-subtitle">Apex Institute Autonomous Perimeter Defense &bull; Connected to /api/admin/telemetry</p>
+          </div>
+          <div class="drawer-header-actions">
+            <button type="button" class="btn-refresh-soc" id="btn-drawer-refresh">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Sync</span>
+            </button>
+            <button type="button" class="btn-close-drawer" id="btn-drawer-close">&times;</button>
+          </div>
+        </div>
+
+        <!-- Fast Presentation Controls Bar -->
+        <div class="soc-drawer-sim-bar">
+          <span class="soc-sim-label">Live Presentation Controls:</span>
+          <button type="button" class="btn-sim-quick brute" id="btn-soc-quick-brute" title="Triggers 3 rapid credential failures and sets 24-hour lockout">
+            💥 Simulate Brute-Force Attack
+          </button>
+          <button type="button" class="btn-sim-quick sqli" id="btn-soc-quick-sqli" title="Injects ' OR 1=1; DROP TABLE users;--">
+            💉 Inject SQLi
+          </button>
+          <button type="button" class="btn-sim-quick xss" id="btn-soc-quick-xss" title="Injects <script>fetch(cookie)</script>">
+            ⚡ Inject XSS
+          </button>
+          <button type="button" class="btn-sim-quick unblock-all" id="btn-soc-quick-unblock-all" title="Clears all active lockouts with master key SOC-RESET-2026">
+            🔓 Unblock All (Fast-Forward)
+          </button>
+        </div>
+
+        <!-- Metrics Counters Row -->
+        <div class="soc-drawer-metrics">
+          <div class="metric-card">
+            <span class="metric-card-label">Requests Inspected</span>
+            <div class="metric-card-value" id="drawer-metric-requests">0</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-card-label">Threats Deflected</span>
+            <div class="metric-card-value" style="color: #FF0055;" id="drawer-metric-threats">0</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-card-label">Active 24h Lockouts</span>
+            <div class="metric-card-value danger" id="drawer-metric-lockouts">0</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-card-label">Perimeter Rate Blocks</span>
+            <div class="metric-card-value" style="color: #FFB703;" id="drawer-metric-ratelimit">0</div>
+          </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="soc-tab-nav">
+          <button type="button" class="soc-tab-btn active" id="tab-btn-lockouts" data-tab="panel-lockouts">
+            <span>🔒 Locked Accounts &amp; Blocked IPs</span>
+            <span class="soc-tab-badge" id="tab-lockouts-count">0</span>
+          </button>
+          <button type="button" class="soc-tab-btn" id="tab-btn-waf" data-tab="panel-waf">
+            <span>🛡️ Live WAF Packet Inspection Log</span>
+            <span class="soc-tab-badge" id="tab-waf-count">0</span>
+          </button>
+        </div>
+
+        <!-- Drawer Body & Tab Panels -->
+        <div class="soc-drawer-body">
+          <!-- Panel 1: Real-time Table of Blocked IPs, 24-Hour Locked Accounts, and Countdown Timers -->
+          <div class="soc-tab-panel active" id="panel-lockouts">
+            <div class="soc-table-wrapper">
+              <table class="soc-table">
+                <thead>
+                  <tr>
+                    <th>Threat ID</th>
+                    <th>Target (User / IP)</th>
+                    <th>Breach Reason</th>
+                    <th>Remaining Lockout Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="locked-accounts-tbody">
+                  <!-- Injected dynamically by socDashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Panel 2: Live WAF Packet Inspection Log showing SQLi, XSS, and Rate-Limit Events -->
+          <div class="soc-tab-panel" id="panel-waf">
+            <div class="soc-table-wrapper">
+              <table class="soc-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Severity</th>
+                    <th>Attack Vector / Rule</th>
+                    <th>Client Origin</th>
+                    <th>Payload Sample</th>
+                    <th>Action Taken</th>
+                  </tr>
+                </thead>
+                <tbody id="waf-logs-tbody">
+                  <!-- Injected dynamically by socDashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="/portal3d.js"></script>
+  <script src="/socDashboard.js"></script>
+</body>
+</html>
+
+
+
+
+
+

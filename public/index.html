@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebShield | Apex Institute of Technology & Cyber Sciences</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+  
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="/styles.css">
+  
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Three.js Canvas Container for Background 3D Shield -->
+  <div id="shield-canvas-container">
+    <canvas id="shield-canvas"></canvas>
+  </div>
+
+  <!-- Master Application Viewport -->
+  <div class="app-viewport">
+
+    <!-- =====================================================================
+         1. WEBSHIELD SECURITY GATE VIEW (LOGIN & PERIMETER)
+         ===================================================================== -->
+    <main id="gate-view">
+      <!-- Top Perimeter Header -->
+      <header class="gate-header">
+        <div class="brand-badge">
+          <div class="crest-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>Apex Institute of Technology &amp; Cyber Sciences</h1>
+            <p>WebShield Multi-Layer Perimeter &bull; WAF + IAM + IDS</p>
+          </div>
+        </div>
+
+        <div class="header-status-pill">
+          <span class="pulse-dot"></span>
+          <span>Perimeter Active &bull; Rate Limit 30 req/min</span>
+        </div>
+      </header>
+
+      <!-- Center Gatekeeper Authentication Card -->
+      <div class="gate-main-container">
+        <div class="glass-auth-card" id="auth-card">
+          <div class="auth-card-header">
+            <h2>Identity Verification Gate</h2>
+            <p class="auth-subtitle">Sovereignty Through Cryptographic Authentication</p>
+
+            <!-- 3-Strike Attempt Meter -->
+            <div class="attempt-meter-container">
+              <span class="attempt-label" id="attempt-label-text">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <span id="attempt-count-text">3/3 Attempts Remaining</span>
+              </span>
+              <div class="strike-indicators" id="strike-indicators">
+                <span class="strike-node available" id="strike-dot-1"></span>
+                <span class="strike-node available" id="strike-dot-2"></span>
+                <span class="strike-node available" id="strike-dot-3"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Login Form -->
+          <form autocomplete="off" class="auth-form" id="login-form" autocomplete="off">
+            <!-- Email / Identity -->
+            <div class="input-group">
+              <div class="input-label-row">
+                <label class="input-label" for="username">Academic Identity (Email)</label>
+              </div>
+              <div class="input-wrapper">
+                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <input 
+                  type="email" 
+                  id="username" 
+                  name="username" 
+                  class="cyber-input" 
+                  placeholder="name@apex.edu" 
+                  required 
+                  value="" autocomplete="new-password"
+                >
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+              <div class="input-label-row">
+                <label class="input-label" for="password">Cryptographic Password</label>
+              </div>
+              <div class="input-wrapper">
+                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <input 
+                  type="password" 
+                  id="password" 
+                  name="password" 
+                  class="cyber-input" 
+                  placeholder="••••••••••••" 
+                  required 
+                  value="" autocomplete="new-password"
+                >
+                <button type="button" class="pw-toggle-btn" id="pw-toggle-btn" title="Toggle Password Visibility">
+                  <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Challenge Box (Appears on Strike 2) -->
+            <div class="challenge-box" id="challenge-box">
+              <div class="challenge-header">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <span id="challenge-question-text">WebShield Verification: What is 4 + 7?</span>
+              </div>
+              <input autocomplete="off" 
+                type="text" 
+                id="challenge-answer" 
+                class="cyber-input" 
+                placeholder="Enter calculation solution" 
+                style="padding-left: 14px;"
+              >
+            </div>
+
+            <!-- Pre-Seeded Test Accounts Quick-Select Tray -->
+            <div class="demo-accounts-tray">
+              <span class="demo-tray-label">Pre-Seeded Demo Credentials:</span>
+              <div class="demo-pills-row">
+                <button type="button" class="demo-pill" id="fill-student-btn" title="Student: student@apex.edu / Apex@2026">
+                  🎓 Student
+                </button>
+                <button type="button" class="demo-pill" id="fill-faculty-btn" title="Faculty: faculty@apex.edu / CyberProf#99">
+                  🔬 Faculty
+                </button>
+                <button type="button" class="demo-pill" id="fill-admin-btn" title="Admin: admin@apex.edu / ShieldMaster!01">
+                  🛡️ SOC Admin
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit-gate" id="btn-submit-login">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                <polyline points="10 17 15 12 10 7"/>
+                <line x1="15" y1="12" x2="3" y2="12"/>
+              </svg>
+              <span>Verify &amp; Enter Campus Portal</span>
+            </button>
+          </form>
+
+          <!-- Feedback Alert -->
+          <div class="gate-alert" id="gate-alert-box">
+            <span id="gate-alert-text">Status message</span>
+          </div>
+
+          <!-- Live Attack Simulator Controls -->
+          <div class="attack-simulation-bar">
+            <span class="sim-bar-label">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              Live Attack Simulator (Demonstrate WAF &amp; Lockout):
+            </span>
+            <div class="sim-buttons-row">
+              <button type="button" class="btn-sim-attack" id="btn-sim-sqli">
+                💉 SQLi Attack
+              </button>
+              <button type="button" class="btn-sim-attack" id="btn-sim-xss">
+                ⚡ XSS Injection
+              </button>
+              <button type="button" class="btn-sim-attack" id="btn-sim-path">
+                📂 Traversal (../)
+              </button>
+              <button type="button" class="btn-sim-attack full-width" id="btn-sim-brute">
+                💥 Fast-Trigger 3-Strike Lockout (Simulated Brute Force)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Telemetry Ticker -->
+      <footer class="gate-footer-ticker">
+        <div class="ticker-item">
+          <span>Client IP:</span>
+          <span class="ticker-value" id="client-ip-display">Resolving...</span>
+        </div>
+        <div class="ticker-item">
+          <span>Device Fingerprint:</span>
+          <span class="ticker-value" id="client-fp-display">Computing HMAC...</span>
+        </div>
+        <div class="ticker-item">
+          <span>WAF Signature Rules:</span>
+          <span class="ticker-value">18 Active Heuristics</span>
+        </div>
+        <div class="ticker-item">
+          <span>Encryption:</span>
+          <span class="ticker-value">TLS 1.3 | AES-256-GCM</span>
+        </div>
+      </footer>
+    </main>
+
+    <!-- =====================================================================
+         2. FULL-SCREEN 24-HOUR LOCKOUT SCREEN
+         ===================================================================== -->
+    <div id="lockout-screen">
+      <div class="lockout-card">
+        <div class="lockout-badge-danger">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+          </svg>
+          CRITICAL INTRUSION LOCKOUT ACTIVATED
+        </div>
+
+        <h2>Security Lockout Active</h2>
+        <p class="lockout-reason-text" id="lockout-reason">
+          3 Consecutive Authentication Failures Exceeded Maximum Allowed Threshold.
+        </p>
+
+        <!-- Precision Countdown Timer -->
+        <div class="countdown-box">
+          <span class="countdown-label">Time Remaining Until Security Review</span>
+          <span class="countdown-digits" id="lockout-countdown">23:59:59</span>
+        </div>
+
+        <!-- Forensic Incident Receipt -->
+        <div class="forensic-receipt">
+          <div class="receipt-row">
+            <span class="receipt-key">Threat ID:</span>
+            <span class="receipt-val highlight" id="receipt-threat-id">THREAT-L3-9A4F2E</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-key">Device Fingerprint:</span>
+            <span class="receipt-val" id="receipt-fingerprint">e8a719bf38...</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-key">Client Origin:</span>
+            <span class="receipt-val" id="receipt-ip">127.0.0.1 (Local Security Zone)</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-key">Timestamp of Breach:</span>
+            <span class="receipt-val" id="receipt-timestamp">2026-11-19 23:30:00 UTC</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-key">Enforcement Action:</span>
+            <span class="receipt-val highlight">HTTP 423 Locked (24 Hours / 86,400,000 ms)</span>
+          </div>
+        </div>
+
+        <!-- Admin Override Button -->
+        <button type="button" class="btn-override-open" id="btn-open-override">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Admin Override / Demo Fast-Forward</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         3. ADMIN OVERRIDE MODAL
+         ===================================================================== -->
+    <div class="modal-backdrop" id="override-modal">
+      <div class="modal-dialog">
+        <button type="button" class="modal-close-btn" id="btn-close-override">&times;</button>
+        <h3>SOC Master Override</h3>
+        <p>Enter the evaluation master fast-forward key to instantly unlock the 24-hour lockout for live demonstration.</p>
+
+        <form autocomplete="off" id="override-form">
+          <div class="input-group">
+            <label class="input-label" for="override-key-input">Master Key</label>
+            <input type="password" id="override-key-input" name="masterKeyField" value="" placeholder="" autocomplete="off" style="padding-left: 14px;" required>
+          </div>
+          <button type="submit" class="btn-submit-override" id="btn-apply-override">
+            Apply Fast-Forward Bypass
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         4. DECRYPTION TRANSITION HUD (1.8-SECOND SEQUENCE)
+         ===================================================================== -->
+    <div id="transition-overlay">
+      <div class="decryption-core"></div>
+      <h3 class="transition-title">Identity Verified — Decrypting Campus Portal</h3>
+      <div class="transition-progress-bar">
+        <div class="transition-progress-fill" id="transition-progress-fill"></div>
+      </div>
+      <p class="transition-telemetry-text" id="transition-telemetry-text">
+        Establishing TLS 1.3 quantum key exchange &bull; Loading holographic environment...
+      </p>
+    </div>
+
+    <!-- =====================================================================
+         5. UNLOCKED PROTECTED CAMPUS PORTAL VIEW
+         ===================================================================== -->
+    <div id="portal-view">
+      <!-- Portal Top Navigation Bar -->
+      <nav class="portal-navbar">
+        <div class="portal-nav-brand">
+          <div class="crest-icon-box" style="width: 36px; height: 36px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 style="font-size: 1rem;">Apex Institute</h1>
+            <p style="font-size: 0.65rem;">Academic Cyber Portal</p>
+          </div>
+        </div>
+
+        <ul class="portal-nav-links">
+          <li><a href="#hero" class="active">Overview</a></li>
+          <li><a href="#departments">Departments &amp; Labs</a></li>
+          <li><a href="#stats">Campus Telemetry</a></li>
+          <li><a href="#life">Admissions &amp; Life</a></li>
+        </ul>
+
+        <div class="portal-nav-actions">
+          <div class="encryption-badge">
+            <span class="pulse-dot" style="background:#10B981; box-shadow:0 0 8px #10B981;"></span>
+            <span>TLS 1.3 | AES-256</span>
+          </div>
+
+          <div class="user-identity-badge" id="user-badge">
+            <img 
+              id="user-avatar-img" 
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" 
+              alt="User" 
+              class="user-avatar"
+            >
+            <div class="user-meta-col">
+              <span class="user-meta-name" id="user-display-name">Alex Rivera</span>
+              <span class="user-meta-role" id="user-display-role">Student &bull; Level 1</span>
+            </div>
+          </div>
+
+          <button type="button" class="btn-soc-monitor" id="btn-open-soc" title="Open Real-Time Security Operations Center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            <span>SOC Monitor</span>
+          </button>
+
+          <button type="button" class="btn-logout" id="btn-logout" title="Revoke Session & Disconnect">
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <!-- Portal Hero Section with 3D Holographic Monument -->
+      <section class="portal-hero-section" id="hero">
+        <div class="hero-content-col">
+          <span class="hero-eyebrow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            World Leader in Post-Quantum Computing &amp; Defense
+          </span>
+          <h1>Apex Institute of Technology &amp; Cyber Sciences</h1>
+          <p>
+            Welcome to the secure interior portal. Apex unites world-class faculty, quantum entangled networking labs, and zero-trust mesh defense architectures to forge the vanguard of cybersecurity engineering.
+          </p>
+          <div class="hero-actions-row">
+            <a href="#departments" class="btn-primary-portal">
+              <span>Inspect Academic Labs</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+            <button type="button" class="btn-secondary-portal" id="btn-hero-soc">
+              Open SOC Dashboard
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Holographic Campus Globe Frame -->
+        <div class="hero-3d-col">
+          <canvas id="portal-canvas" style="width: 100%; height: 100%;"></canvas>
+          <div class="monument-hud-overlay" id="monument-hud-overlay">
+            <span style="color:#38BDF8; font-weight:700;">HOLOGRAPHIC CAMPUS MONUMENT</span>
+            <div id="monument-hud-info">Drag to rotate &bull; Hover over beacons to inspect labs</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Academic Departments & Labs Grid -->
+      <section class="portal-section" id="departments">
+        <div class="section-header-block">
+          <span class="section-eyebrow">Elite Research Faculties</span>
+          <h2 class="section-title">Specialized Academic Programs &amp; Cyber Vaults</h2>
+        </div>
+
+        <div class="departments-grid">
+          <!-- Card 1 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">CYB &bull; LEVEL 1-5</span>
+              <h3>Cyber Defense &amp; Offensive Security</h3>
+              <p>Specialized training in kernel exploitation, firmware disassembly, autonomous red teaming, and hardware side-channel defense.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>12 Research Labs</span>
+              <span style="color:#00F5D4;">Active DEFCON 5</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">QNT &bull; LEVEL 3+</span>
+              <h3>Quantum Cryptography &amp; QKD</h3>
+              <p>Researching photon entanglement distribution, Shor algorithm resistance, and post-quantum lattice cryptography implementations.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>8 Photonic Vaults</span>
+              <span style="color:#7B2CBF;">100 Gbps Entangled</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">AIR &bull; LEVEL 2+</span>
+              <h3>Artificial Intelligence &amp; Swarm Defense</h3>
+              <p>Building resilient neural architectures, zero-day model poisoning countermeasures, and autonomous adversarial testing swarms.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>14 Neural Ranges</span>
+              <span style="color:#4361EE;">Swarm Testing Live</span>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="dept-tilt-card">
+            <div>
+              <span class="dept-badge">CLD &bull; LEVEL 2+</span>
+              <h3>Distributed Cloud &amp; MicroVM Sandboxing</h3>
+              <p>Zero-trust service meshes, eBPF kernel telemetry observability, confidential hardware enclaves, and distributed edge isolation.</p>
+            </div>
+            <div class="dept-meta-row">
+              <span>9 Cloud Clusters</span>
+              <span style="color:#FFB703;">100% Zero-Trust</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campus Stats Banner -->
+        <div class="stats-banner" id="stats">
+          <div class="stat-item">
+            <h4>1,420</h4>
+            <p>Active Researchers</p>
+          </div>
+          <div class="stat-item">
+            <h4>64</h4>
+            <p>Quantum Nodes Online</p>
+          </div>
+          <div class="stat-item">
+            <h4>100 Gbps</h4>
+            <p>Photonic QKD Mesh</p>
+          </div>
+          <div class="stat-item">
+            <h4 style="color: #10B981;">0</h4>
+            <p>Unresolved Breaches</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campus Life & Admissions Showcase -->
+      <section class="portal-section" id="life" style="padding-bottom: 100px;">
+        <div class="section-header-block">
+          <span class="section-eyebrow">The Apex Experience</span>
+          <h2 class="section-title">Admissions &amp; Global Impact</h2>
+        </div>
+
+        <div class="departments-grid">
+          <div class="dept-tilt-card" style="background: rgba(18, 30, 68, 0.55);">
+            <h3>24/7 Red vs Blue Cyber Arena</h3>
+            <p>Students compete in daily simulated national cyber-warfare scenarios using real-time packet inspection and kernel-level exploits.</p>
+            <div class="dept-meta-row">
+              <span>Arena Sigma-9</span>
+              <span style="color:#00F5D4;">Continuous Match</span>
+            </div>
+          </div>
+
+          <div class="dept-tilt-card" style="background: rgba(18, 30, 68, 0.55);">
+            <h3>Satellite Downlink Ground Station</h3>
+            <p>Direct atmospheric photonic reception from low-earth orbit quantum satellites testing free-space cryptographic key transmission.</p>
+            <div class="dept-meta-row">
+              <span>Observatory Delta</span>
+              <span style="color:#38BDF8;">LEO Link Active</span>
+            </div>
+          </div>
+
+          <div class="dept-tilt-card" style="background: rgba(18, 30, 68, 0.55);">
+            <h3>DARPA &amp; Global Industry Fellowships</h3>
+            <p>Fully funded graduate fellowships sponsored by sovereign cyber task forces, leading tech titans, and research foundations.</p>
+            <div class="dept-meta-row">
+              <span>Fall Cohort Open</span>
+              <span style="color:#10B981;">Apply with Clearance</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Floating SOC Quick-Access Presentation Button -->
+    <button type="button" class="soc-floating-btn" id="soc-floating-btn" title="Open Live Security Operations Center">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+      <span>SOC Drawer</span>
+      <span class="defcon-tag" id="defcon-pill">DEFCON 5</span>
+    </button>
+
+    <!-- =====================================================================
+         6. LIVE SECURITY OPERATIONS CENTER (SOC) SLIDE-OVER DRAWER
+         ===================================================================== -->
+    <div class="soc-drawer-backdrop" id="soc-drawer-backdrop">
+      <aside class="soc-drawer" id="soc-drawer">
+        <!-- Drawer Header -->
+        <div class="soc-drawer-header">
+          <div class="soc-drawer-title-group">
+            <h2>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+              <span>Security Operations Center (SOC)</span>
+            </h2>
+            <p id="soc-status-subtitle">Apex Institute Autonomous Perimeter Defense &bull; Connected to /api/admin/telemetry</p>
+          </div>
+          <div class="drawer-header-actions">
+            <button type="button" class="btn-refresh-soc" id="btn-drawer-refresh">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Sync</span>
+            </button>
+            <button type="button" class="btn-close-drawer" id="btn-drawer-close">&times;</button>
+          </div>
+        </div>
+
+        <!-- Fast Presentation Controls Bar -->
+        <div class="soc-drawer-sim-bar">
+          <span class="soc-sim-label">Live Presentation Controls:</span>
+          <button type="button" class="btn-sim-quick brute" id="btn-soc-quick-brute" title="Triggers 3 rapid credential failures and sets 24-hour lockout">
+            💥 Simulate Brute-Force Attack
+          </button>
+          <button type="button" class="btn-sim-quick sqli" id="btn-soc-quick-sqli" title="Injects ' OR 1=1; DROP TABLE users;--">
+            💉 Inject SQLi
+          </button>
+          <button type="button" class="btn-sim-quick xss" id="btn-soc-quick-xss" title="Injects <script>fetch(cookie)</script>">
+            ⚡ Inject XSS
+          </button>
+          <button type="button" class="btn-sim-quick unblock-all" id="btn-soc-quick-unblock-all" title="Clears all active lockouts with master key SOC-RESET-2026">
+            🔓 Unblock All (Fast-Forward)
+          </button>
+        </div>
+
+        <!-- Metrics Counters Row -->
+        <div class="soc-drawer-metrics">
+          <div class="metric-card">
+            <span class="metric-card-label">Requests Inspected</span>
+            <div class="metric-card-value" id="drawer-metric-requests">0</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-card-label">Threats Deflected</span>
+            <div class="metric-card-value" style="color: #FF0055;" id="drawer-metric-threats">0</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-card-label">Active 24h Lockouts</span>
+            <div class="metric-card-value danger" id="drawer-metric-lockouts">0</div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-card-label">Perimeter Rate Blocks</span>
+            <div class="metric-card-value" style="color: #FFB703;" id="drawer-metric-ratelimit">0</div>
+          </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="soc-tab-nav">
+          <button type="button" class="soc-tab-btn active" id="tab-btn-lockouts" data-tab="panel-lockouts">
+            <span>🔒 Locked Accounts &amp; Blocked IPs</span>
+            <span class="soc-tab-badge" id="tab-lockouts-count">0</span>
+          </button>
+          <button type="button" class="soc-tab-btn" id="tab-btn-waf" data-tab="panel-waf">
+            <span>🛡️ Live WAF Packet Inspection Log</span>
+            <span class="soc-tab-badge" id="tab-waf-count">0</span>
+          </button>
+        </div>
+
+        <!-- Drawer Body & Tab Panels -->
+        <div class="soc-drawer-body">
+          <!-- Panel 1: Real-time Table of Blocked IPs, 24-Hour Locked Accounts, and Countdown Timers -->
+          <div class="soc-tab-panel active" id="panel-lockouts">
+            <div class="soc-table-wrapper">
+              <table class="soc-table">
+                <thead>
+                  <tr>
+                    <th>Threat ID</th>
+                    <th>Target (User / IP)</th>
+                    <th>Breach Reason</th>
+                    <th>Remaining Lockout Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="locked-accounts-tbody">
+                  <!-- Injected dynamically by socDashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Panel 2: Live WAF Packet Inspection Log showing SQLi, XSS, and Rate-Limit Events -->
+          <div class="soc-tab-panel" id="panel-waf">
+            <div class="soc-table-wrapper">
+              <table class="soc-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Severity</th>
+                    <th>Attack Vector / Rule</th>
+                    <th>Client Origin</th>
+                    <th>Payload Sample</th>
+                    <th>Action Taken</th>
+                  </tr>
+                </thead>
+                <tbody id="waf-logs-tbody">
+                  <!-- Injected dynamically by socDashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="/shield3d.js"></script>
+  <script src="/portal3d.js"></script>
+  <script src="/socDashboard.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
